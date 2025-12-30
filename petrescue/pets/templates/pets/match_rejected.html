@@ -1,0 +1,11 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+  <h2>Match rejected</h2>
+  {% if error %}
+    <p class="error">{{ error }}</p>
+  {% else %}
+    <p>Thanks — the owner has rejected the match request.</p>
+  {% endif %}
+  <p><a href="/">Back to home</a></p>
+{% endblock %}

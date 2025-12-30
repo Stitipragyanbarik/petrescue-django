@@ -1,0 +1,17 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+  <h2>Owner Inbox</h2>
+  <p>Contact requests for your pets:</p>
+  <ul>
+    {% for cr in requests %}
+      <li>
+        Pet: {{ cr.match_request.pet.name }} — Created: {{ cr.created_at }} —
+        <a href="{% url 'pets:contact_owner' cr.id %}">Open thread</a>
+      </li>
+    {% empty %}
+      <li>No contact requests yet.</li>
+    {% endfor %}
+  </ul>
+  <p><a href="/">Back to home</a></p>
+{% endblock %}

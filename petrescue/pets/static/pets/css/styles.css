@@ -1,0 +1,194 @@
+/* Add your custom styles for the report pet page here */
+:root {
+    --bg: #f6f8fb;
+    --card: #ffffff;
+    --accent: #2563eb;
+    --accent-2: #06b6d4;
+    --muted: #6b7280;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --radius: 12px;
+}
+
+/* General Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+    background: linear-gradient(180deg, #eef2ff 0%, var(--bg) 100%);
+    color: #0f172a;
+    padding: 20px;
+}
+
+/* Container for image + form */
+.report-container {
+    display: flex;
+    max-width: 1000px;
+    margin: 40px auto;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 30px rgba(2,6,23,0.08);
+    overflow: hidden;
+}
+
+/* Left side - Pet Image */
+.report-image {
+    flex: 1;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 20px;
+}
+
+.report-image img {
+    max-width: 100%;
+    max-height: 400px;
+    border-radius: var(--radius);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+/* Pet placeholder styling */
+.pet-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius);
+    padding: 40px 20px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+}
+
+.pet-icon {
+    font-size: 4rem;
+    margin-bottom: 15px;
+    opacity: 0.8;
+}
+
+.pet-placeholder p {
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Right side - Form */
+.report-form {
+    flex: 1;
+    padding: 40px;
+}
+
+.report-form h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: var(--accent);
+}
+
+.report-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.report-form label {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.report-form input[type="text"],
+.report-form input[type="number"],
+.report-form input[type="file"],
+.report-form select,
+.report-form textarea {
+    padding: 12px 15px;
+    margin-bottom: 16px;
+    border-radius: 10px;
+    border: 1px solid #e6eefc;
+    background: #fbfdff;
+    font-size: 14px;
+    width: 100%;
+}
+
+.report-form input:focus,
+.report-form select:focus,
+.report-form textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
+}
+
+/* Submit Button */
+.report-form button[type="submit"] {
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.report-form button[type="submit"]:hover {
+    opacity: 0.95;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+}
+
+/* Image Upload and Preview */
+.image-upload-area {
+    border: 2px dashed #cbd5e1;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    background: #f8fafc;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    margin-bottom: 16px;
+}
+
+.image-upload-area:hover,
+.image-upload-area.dragover {
+    border-color: var(--accent);
+    background: #eef2ff;
+}
+
+.image-upload-area p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.image-preview {
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 8px;
+    margin-top: 10px;
+    display: none;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .report-container {
+        flex-direction: column;
+    }
+
+    .report-image {
+        padding: 20px 0;
+    }
+
+    .report-form {
+        padding: 20px;
+    }
+}

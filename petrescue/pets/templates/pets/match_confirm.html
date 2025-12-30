@@ -1,0 +1,14 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+  <h2>Match approved</h2>
+  {% if error %}
+    <p class="error">{{ error }}</p>
+  {% else %}
+    <p>Thank you. The rescuer has been notified.</p>
+    {% if contact_request %}
+      <p>A contact thread has been created: <a href="{% url 'pets:contact_request' contact_request.id %}">open contact thread</a></p>
+    {% endif %}
+  {% endif %}
+  <p><a href="/">Back to home</a></p>
+{% endblock %}

@@ -1,0 +1,310 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<style>
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #f8f9fa;
+    padding: 20px;
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    display: flex;
+    max-width: 900px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.auth-image {
+    flex: 1;
+    background: #e9ecef;
+}
+
+.pet-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.auth-content {
+    flex: 1;
+    padding: 40px;
+}
+
+.auth-content h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-row {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 5px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    background: #f7fafc;
+    font-size: 14px;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #007bff;
+    background: #fff;
+}
+
+.text-danger {
+    color: #e53e3e;
+    font-size: 13px;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 12px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    background: #0056b3;
+}
+
+.muted-link {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.muted-link a {
+    color: #007bff;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .auth-card {
+        flex-direction: column;
+    }
+}
+
+.requirement {
+    color: #e53e3e;
+    margin: 2px 0;
+    transition: color 0.3s ease;
+}
+
+.requirement.valid {
+    color: #38a169;
+}
+
+.req-icon {
+    font-weight: bold;
+    margin-right: 5px;
+}
+</style>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-image">
+            <img
+                src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee"
+                alt="Pet"
+                class="pet-image"
+            >
+        </div>
+
+        <div class="auth-content">
+            <h2>Create Account</h2>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <div class="form-row">
+                    <label>{{ form.username.label }}</label>
+                    {{ form.username }}
+                    {{ form.username.errors }}
+                </div>
+
+                <div class="form-row">
+                    <label>{{ form.email.label }}</label>
+                    {{ form.email }}
+                    {{ form.email.errors }}
+                </div>
+
+                <div class="form-row">
+                    <label>{{ form.user_type.label }}</label>
+                    {{ form.user_type }}
+                    {{ form.user_type.errors }}
+                </div>
+
+                <div class="form-row">
+                    <label>{{ form.phone_number.label }}</label>
+                    {{ form.phone_number }}
+                    {{ form.phone_number.errors }}
+                </div>
+
+                <div class="form-row">
+                    <label>{{ form.password1.label }}</label>
+                    {{ form.password1 }}
+                    {{ form.password1.errors }}                    <div id="password-strength" style="margin-top:8px;">
+                        <div id="strength-bar" style="height:6px;background:#e2e8f0;border-radius:3px;transition:all 0.3s ease;"></div>
+                        <small id="strength-text" style="color:#4a5568;font-size:12px;margin-top:4px;display:block;">Password strength</small>
+                        <div id="password-requirements" style="margin-top:8px;font-size:12px;">
+                            <div class="requirement" id="req-length">
+                                <span class="req-icon">✗</span> At least 8 characters
+                            </div>
+                            <div class="requirement" id="req-lowercase">
+                                <span class="req-icon">✗</span> One lowercase letter
+                            </div>
+                            <div class="requirement" id="req-uppercase">
+                                <span class="req-icon">✗</span> One uppercase letter
+                            </div>
+                            <div class="requirement" id="req-number">
+                                <span class="req-icon">✗</span> One number
+                            </div>
+                            <div class="requirement" id="req-special">
+                                <span class="req-icon">✗</span> One special character
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label>{{ form.password2.label }}</label>
+                    {{ form.password2 }}
+                    {{ form.password2.errors }}
+                </div>                {% if not show_otp %}
+                    <button type="submit" class="btn-submit">Register</button>
+                {% endif %}
+            </form>
+
+            {% if show_otp %}
+            <!-- OTP Verification Section -->
+            <div class="otp-section" style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #007bff;">
+                <h3 style="color: #1a202c; margin-bottom: 15px; font-size: 20px;">📱 Verify Your Phone Number</h3>
+                <p style="color: #4a5568; margin-bottom: 20px;">
+                    We've sent a 6-digit verification code to <strong>{{ phone_number }}</strong>
+                </p>
+                
+                <form method="post" style="margin-bottom: 15px;">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <label for="otp" style="font-weight: 600; color: #2d3748;">Enter Verification Code:</label>
+                        <input 
+                            type="text" 
+                            id="otp" 
+                            name="otp" 
+                            maxlength="6" 
+                            placeholder="000000"
+                            style="text-align: center; font-size: 18px; letter-spacing: 2px; font-weight: 600;"
+                            required
+                        >
+                    </div>
+                    <button type="submit" name="verify_otp" class="btn-submit" style="background: #38a169;">
+                        ✓ Verify Code
+                    </button>
+                </form>
+                
+                <div style="text-align: center;">
+                    <form method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" name="request_otp" class="btn-link" style="background: none; border: none; color: #007bff; text-decoration: underline; cursor: pointer; font-size: 14px;">
+                            📲 Resend Code
+                        </button>
+                    </form>
+                    <span style="color: #718096; margin: 0 10px;">|</span>
+                    <a href="{% url 'register' %}" style="color: #007bff; text-decoration: underline; font-size: 14px;">
+                        ← Start Over
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+            <p class="muted-link">
+                Already have an account?
+                <a href="{% url 'login' %}">Login</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const password = document.getElementById('id_password1');
+    const bar = document.getElementById('strength-bar');
+    const text = document.getElementById('strength-text');
+
+    if (!password) return;    password.addEventListener('input', () => {
+        let strength = 0;
+        const val = password.value;
+
+        // Check requirements and update UI
+        const requirements = {
+            length: val.length >= 8,
+            lowercase: /[a-z]/.test(val),
+            uppercase: /[A-Z]/.test(val),
+            number: /\d/.test(val),
+            special: /[^A-Za-z0-9]/.test(val)
+        };
+
+        // Update requirement indicators
+        Object.keys(requirements).forEach(req => {
+            const element = document.getElementById(`req-${req}`);
+            const icon = element.querySelector('.req-icon');
+            
+            if (requirements[req]) {
+                element.classList.add('valid');
+                icon.textContent = '✓';
+                strength++;
+            } else {
+                element.classList.remove('valid');
+                icon.textContent = '✗';
+            }
+        });
+
+        // Update strength bar
+        if (strength <= 2) {
+            bar.style.width = '33%';
+            bar.style.background = '#e53e3e';
+            text.innerText = 'Weak password';
+        } else if (strength <= 4) {
+            bar.style.width = '66%';
+            bar.style.background = '#dd6b20';
+            text.innerText = 'Medium password';
+        } else {
+            bar.style.width = '100%';
+            bar.style.background = '#38a169';
+            text.innerText = 'Strong password';
+        }
+    });
+});
+</script>
+{% endblock %}

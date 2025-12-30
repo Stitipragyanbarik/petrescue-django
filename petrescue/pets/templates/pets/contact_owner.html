@@ -1,0 +1,29 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+  <h2>Owner Inbox</h2>
+  {% if error %}
+    <p class="error">{{ error }}</p>
+  {% else %}
+    <h3>Contact request for {{ contact.match_request.pet.name }}</h3>
+    <ul>
+      {% for msg in contact.messages.all %}
+        <li><strong>{{ msg.sender.username }}</strong> ({{ msg.created_at }}):<br>{{ msg.message }}</li>
+      {% empty %}
+        <li>No messages yet.</li>
+      {% endfor %}
+    </ul>
+    {% if sent %}
+      <p>Your reply was sent to the reporter.</p>
+    {% else %}
+      <form method="post">
+        {% csrf_token %}
+        <div>
+          <label for="id_message">Reply</label>
+          <textarea name="message" id="id_message" rows="4" class="form-control"></textarea>
+        </div>
+        <div><button type="submit">Send reply</button></div>
+      </form>
+    {% endif %}
+  {% endif %}
+{% endblock %}

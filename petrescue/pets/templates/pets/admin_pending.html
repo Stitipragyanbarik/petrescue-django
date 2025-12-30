@@ -1,0 +1,242 @@
+{% extends 'accounts/base.html' %}
+
+{% load static %}
+
+{% block title %}Admin - Pending Pet Reports{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'accounts/css/styles.css' %}">
+
+<div class="admin-container">
+    <h1>Admin Dashboard - Pending Pet Reports</h1>
+    
+    {% if error %}
+        <div class="error-message">
+            <p>{{ error }}</p>
+        </div>
+    {% else %}
+        <!-- Statistics -->
+        <div class="stats-container">
+            <div class="stat-box">
+                <h3>{{ pending_count }}</h3>
+                <p>Pending</p>
+            </div>
+            <div class="stat-box">
+                <h3>{{ approved_pets }}</h3>
+                <p>Approved</p>
+            </div>
+            <div class="stat-box">
+                <h3>{{ rejected_pets }}</h3>
+                <p>Rejected</p>
+            </div>
+            <div class="stat-box">
+                <h3>{{ total_pets }}</h3>
+                <p>Total</p>
+            </div>
+        </div>
+
+        {% if pending_pets %}
+            <div class="pending-pets">
+                <h2>Pending Pet Reports ({{ pending_count }})</h2>
+                
+                {% for pet in pending_pets %}
+                    <div class="pet-card">
+                        <div class="pet-info">
+                            <div class="pet-image">
+                                {% if pet.image %}
+                                    <img src="{{ pet.image.url }}" alt="{{ pet.name }}" style="max-width: 150px; max-height: 150px; object-fit: cover;">
+                                {% else %}
+                                    <div class="no-image">No Image</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="pet-details">
+                                <h3>{{ pet.name }}</h3>
+                                <p><strong>Owner:</strong> {{ pet.owner.username }} ({{ pet.owner.email }})</p>
+                                <p><strong>Species:</strong> {{ pet.species|default:"Not specified" }}</p>
+                                <p><strong>Breed:</strong> {{ pet.breed|default:"Not specified" }}</p>
+                                <p><strong>Age:</strong> {{ pet.age|default:"Not specified" }}</p>
+                                <p><strong>Gender:</strong> {{ pet.gender }}</p>
+                                <p><strong>Color:</strong> {{ pet.color|default:"Not specified" }}</p>
+                                <p><strong>Status:</strong> {{ pet.get_status_display }}</p>
+                                <p><strong>Location:</strong> {{ pet.location|default:"Not specified" }}</p>
+                                <p><strong>Contact:</strong> {{ pet.contact_phone|default:"Not provided" }}</p>
+                                <p><strong>Reported:</strong> {{ pet.created_at|date:"M d, Y H:i" }}</p>
+                                {% if pet.description %}
+                                    <p><strong>Description:</strong> {{ pet.description }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="pet-actions">
+                            <form method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="pet_id" value="{{ pet.id }}">
+                                <input type="hidden" name="action" value="approve">
+                                <button type="submit" class="btn-approve" onclick="return confirm('Are you sure you want to approve this pet report?')">
+                                    ✓ Approve
+                                </button>
+                            </form>
+                            
+                            <form method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="pet_id" value="{{ pet.id }}">
+                                <input type="hidden" name="action" value="reject">
+                                <button type="submit" class="btn-reject" onclick="return confirm('Are you sure you want to reject this pet report?')">
+                                    ✗ Reject
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-pending">
+                <h2>No Pending Pet Reports</h2>
+                <p>All pet reports have been processed.</p>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+
+<style>
+.admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.stats-container {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.stat-box {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    min-width: 120px;
+    border: 1px solid #dee2e6;
+}
+
+.stat-box h3 {
+    font-size: 2em;
+    margin: 0;
+    color: #007bff;
+}
+
+.stat-box p {
+    margin: 5px 0 0 0;
+    color: #6c757d;
+}
+
+.pet-card {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pet-info {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.pet-image {
+    flex-shrink: 0;
+}
+
+.no-image {
+    width: 150px;
+    height: 150px;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #dee2e6;
+    color: #6c757d;
+}
+
+.pet-details h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.pet-details p {
+    margin: 5px 0;
+    line-height: 1.4;
+}
+
+.pet-actions {
+    text-align: right;
+    border-top: 1px solid #dee2e6;
+    padding-top: 15px;
+}
+
+.btn-approve, .btn-reject {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 10px;
+    transition: background-color 0.3s;
+}
+
+.btn-approve {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-approve:hover {
+    background-color: #218838;
+}
+
+.btn-reject {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-reject:hover {
+    background-color: #c82333;
+}
+
+.error-message {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #f5c6cb;
+    margin-bottom: 20px;
+}
+
+.no-pending {
+    text-align: center;
+    padding: 40px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    color: #6c757d;
+}
+
+@media (max-width: 768px) {
+    .pet-info {
+        flex-direction: column;
+    }
+    
+    .stats-container {
+        justify-content: center;
+    }
+    
+    .pet-actions {
+        text-align: center;
+    }
+}
+</style>
+
+{% endblock %}

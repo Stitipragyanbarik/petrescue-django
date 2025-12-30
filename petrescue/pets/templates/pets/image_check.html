@@ -1,0 +1,19 @@
+{% if matches %}
+    <h3>Result: Present</h3>
+    <p>The uploaded image is present in the dataset.</p>
+    <h4>Matches Found</h4>
+    <ul>
+        {% for item in matches %}
+            <li>
+                <strong>{{ item.pet.name }}</strong> — Owner: {{ item.pet.owner.username }}
+                {% if item.distance is not None %}
+                    — Hamming distance: {{ item.distance }}
+                {% endif %}
+                — <a href="{% url 'home' %}">Open home</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% elif uploaded_name %}
+    <h3>Result: Not Present</h3>
+    <p>The uploaded image is not present in the dataset.</p>
+{% endif %}

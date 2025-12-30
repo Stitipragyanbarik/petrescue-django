@@ -1,0 +1,319 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="display-4">{{ page_title }}</h1>
+                    <p class="lead text-muted">{{ page_description }}</p>
+                </div>
+                {% if search_performed and pets.total_count %}
+                    <div>
+                        <span class="badge badge-success badge-lg">{{ pets.total_count }} pets found</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Form -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-search"></i> Search Criteria</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="row">
+                        {% csrf_token %}
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.species.id_for_label }}" class="form-label">Species</label>
+                            {{ form.species }}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.breed.id_for_label }}" class="form-label">Breed</label>
+                            {{ form.breed }}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.color.id_for_label }}" class="form-label">Color</label>
+                            {{ form.color }}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.location.id_for_label }}" class="form-label">Location</label>
+                            {{ form.location }}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.gender.id_for_label }}" class="form-label">Gender</label>
+                            {{ form.gender }}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.age_min.id_for_label }}" class="form-label">Min Age</label>
+                            {{ form.age_min }}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.age_max.id_for_label }}" class="form-label">Max Age</label>
+                            {{ form.age_max }}
+                        </div>
+                        
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-search"></i> Search Pets
+                            </button>
+                            <a href="{% url 'pets:search_pets' %}" class="btn btn-secondary btn-lg ml-2">
+                                <i class="fas fa-redo"></i> Clear Search
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Results -->
+    {% if search_performed %}
+        {% if pets.total_count > 0 %}
+            <!-- Found Pets Section -->
+            {% if pets.found %}
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h3 class="text-success">
+                            <i class="fas fa-heart"></i> Found Pets ({{ pets.found.count }})
+                            <small class="text-muted">- These pets have been found and are looking for their owners</small>
+                        </h3>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    {% for pet in pets.found %}
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="card h-100 shadow-sm border-success">
+                                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">{{ pet.name }}</h6>
+                                    <span class="badge badge-light text-success">FOUND</span>
+                                </div>
+                                
+                                {% if pet.image %}
+                                    <img src="{{ pet.image.url }}" class="card-img-top pet-image" alt="{{ pet.name }}" style="height: 200px; object-fit: cover;">
+                                {% else %}
+                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                        <i class="fas fa-paw fa-3x text-muted"></i>
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <strong>Species:</strong><br>
+                                            <span class="text-muted">{{ pet.species|default:"Not specified" }}</span>
+                                        </div>
+                                        <div class="col-6">
+                                            <strong>Breed:</strong><br>
+                                            <span class="text-muted">{{ pet.breed|default:"Mixed" }}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row mt-2">
+                                        <div class="col-6">
+                                            <strong>Gender:</strong><br>
+                                            <span class="text-muted">{{ pet.gender }}</span>
+                                        </div>
+                                        <div class="col-6">
+                                            <strong>Age:</strong><br>
+                                            <span class="text-muted">{{ pet.age|default:"Unknown" }}{% if pet.age %} years{% endif %}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-2">
+                                        <strong>Color:</strong><br>
+                                        <span class="text-muted">{{ pet.color|default:"Not specified" }}</span>
+                                    </div>
+                                    
+                                    <div class="mt-2">
+                                        <strong>Location Found:</strong><br>
+                                        <span class="text-muted">{{ pet.location|default:"Not specified" }}</span>
+                                    </div>
+                                    
+                                    {% if pet.description %}
+                                        <div class="mt-2">
+                                            <strong>Description:</strong><br>
+                                            <span class="text-muted">{{ pet.description|truncatewords:20 }}</span>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="mt-2">
+                                        <strong>Reported:</strong><br>
+                                        <span class="text-muted">{{ pet.report_date|date:"M d, Y" }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="card-footer bg-light">
+                                    <a href="{% url 'pets:pet_inquiry' pet.id %}" class="btn btn-success btn-sm btn-block">
+                                        <i class="fas fa-envelope"></i> This Might Be My Pet!
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Lost Pets Section -->
+            {% if pets.lost %}
+                <div class="row mb-4 mt-5">
+                    <div class="col-12">
+                        <h3 class="text-danger">
+                            <i class="fas fa-exclamation-triangle"></i> Lost Pets ({{ pets.lost.count }})
+                            <small class="text-muted">- These pets are missing and looking for their families</small>
+                        </h3>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    {% for pet in pets.lost %}
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="card h-100 shadow-sm border-danger">
+                                <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">{{ pet.name }}</h6>
+                                    <span class="badge badge-light text-danger">LOST</span>
+                                </div>
+                                
+                                {% if pet.image %}
+                                    <img src="{{ pet.image.url }}" class="card-img-top pet-image" alt="{{ pet.name }}" style="height: 200px; object-fit: cover;">
+                                {% else %}
+                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                        <i class="fas fa-paw fa-3x text-muted"></i>
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <strong>Species:</strong><br>
+                                            <span class="text-muted">{{ pet.species|default:"Not specified" }}</span>
+                                        </div>
+                                        <div class="col-6">
+                                            <strong>Breed:</strong><br>
+                                            <span class="text-muted">{{ pet.breed|default:"Mixed" }}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row mt-2">
+                                        <div class="col-6">
+                                            <strong>Gender:</strong><br>
+                                            <span class="text-muted">{{ pet.gender }}</span>
+                                        </div>
+                                        <div class="col-6">
+                                            <strong>Age:</strong><br>
+                                            <span class="text-muted">{{ pet.age|default:"Unknown" }}{% if pet.age %} years{% endif %}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-2">
+                                        <strong>Color:</strong><br>
+                                        <span class="text-muted">{{ pet.color|default:"Not specified" }}</span>
+                                    </div>
+                                    
+                                    <div class="mt-2">
+                                        <strong>Last Seen:</strong><br>
+                                        <span class="text-muted">{{ pet.last_seen_location|default:pet.location|default:"Not specified" }}</span>
+                                    </div>
+                                    
+                                    {% if pet.description %}
+                                        <div class="mt-2">
+                                            <strong>Description:</strong><br>
+                                            <span class="text-muted">{{ pet.description|truncatewords:20 }}</span>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="mt-2">
+                                        <strong>Reported:</strong><br>
+                                        <span class="text-muted">{{ pet.report_date|date:"M d, Y" }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="card-footer bg-light">
+                                    {% if pet.contact_phone %}
+                                        <small class="text-muted">
+                                            <i class="fas fa-phone"></i> Contact: {{ pet.contact_phone }}
+                                        </small>
+                                    {% else %}
+                                        <small class="text-muted">
+                                            <i class="fas fa-info-circle"></i> Contact via admin for more info
+                                        </small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+        {% else %}
+            <!-- No Results -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-info text-center">
+                        <i class="fas fa-search fa-3x mb-3"></i>
+                        <h4>No pets found matching your criteria</h4>
+                        <p class="mb-0">Try adjusting your search criteria or check back later as new pets are reported regularly.</p>
+                        <hr>
+                        <p class="mb-0">
+                            <strong>Tip:</strong> Try searching with fewer criteria or broader terms (e.g., just "Dog" instead of specific breed).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
+        <!-- Initial State - No Search Performed -->
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-primary text-center">
+                    <i class="fas fa-info-circle fa-2x mb-3"></i>
+                    <h4>Search for Your Lost Pet</h4>
+                    <p>Use the search form above to look for pets that match your lost pet's description. We search through both found pets (reported by rescuers) and lost pets (reported by other owners) to help you find your beloved companion.</p>
+                    <hr>
+                    <p class="mb-0">
+                        <strong>How it works:</strong> Fill in as many details as you can remember about your pet, then click "Search Pets" to see matching reports.
+                    </p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.pet-image {
+    transition: transform 0.3s ease;
+}
+
+.pet-image:hover {
+    transform: scale(1.05);
+}
+
+.card {
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+.badge-lg {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+}
+</style>
+{% endblock %}

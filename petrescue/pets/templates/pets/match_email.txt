@@ -1,0 +1,14 @@
+Hello {{ owner.username }},
+
+A rescuer has submitted a found-pet report that may match your pet "{{ pet.name }}".
+
+Rescuer: {{ reporter.username }}
+Found pet report id: {{ found_pet.id }}
+
+If this looks like your pet, please approve the contact request:
+Approve: {{ approve_url }}
+
+If this is not your pet, you can reject the request:
+Reject: {{ reject_url }}
+
+This request will expire in 7 days.

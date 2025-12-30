@@ -1,0 +1,25 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+  <h2>Match Results</h2>
+  <p>Report ID: {{ pet.id }} — Status: {{ pet.status }}</p>
+
+  {% if matches %}
+    <p>Found {{ matches|length }} possible match(es):</p>
+    <ul>
+      {% for m in matches %}
+        <li>
+          <strong>{{ m.name }}</strong> — {{ m.species }} — Owner: {{ m.owner.username }}
+          <br>
+          Contact phone: {{ m.contact_phone }}
+          <br>
+          Owner email: {{ m.owner.email }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No matches found. We'll keep this report and notify if a match appears.</p>
+  {% endif %}
+
+  <p><a href="/">Back to home</a></p>
+{% endblock %}
