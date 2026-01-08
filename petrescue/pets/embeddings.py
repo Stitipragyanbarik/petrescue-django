@@ -3,13 +3,13 @@ import numpy as np
 
 def _get_tf_model():
     try:
-        from tensorflow.keras.applications import MobileNetV2
-        from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+        from tensorflow.keras.applications import ResNet50
+        from tensorflow.keras.applications.resnet50 import preprocess_input
         from tensorflow.keras.preprocessing import image as keras_image
     except Exception:
         return None
 
-    base = MobileNetV2(weights='imagenet', include_top=False, pooling='avg')
+    base = ResNet50(weights='imagenet', include_top=False, pooling='avg')
 
     def img_to_embedding(path):
         img = keras_image.load_img(path, target_size=(224, 224))
@@ -55,10 +55,10 @@ def build_embeddings(output_dir, pet_qs):
     return count
 
 
-def find_similar_embeddings(query_path, embeddings_dir, top_k=10):
+def find_similar_embeddings(query_path, embeddings_dir, top_k=10, threshold=0.7):
     """Compute embedding for `query_path` and return list of (score, filename)
-    sorted by descending cosine similarity. Returns [] if TF not available or
-    embeddings_dir empty.
+    sorted by descending cosine similarity. Only returns matches above threshold.
+    Returns [] if TF not available or embeddings_dir empty.
     """
     query = compute_embedding_for_image(query_path)
     if query is None:
@@ -83,6 +83,7 @@ def find_similar_embeddings(query_path, embeddings_dir, top_k=10):
         if np.linalg.norm(v) == 0:
             continue
         s = float(np.dot(q, v / np.linalg.norm(v)))
-        scored.append((s, fname))
+        if s >= threshold:  # Only include high-confidence matches
+            scored.append((s, fname))
     scored.sort(reverse=True, key=lambda t: t[0])
     return scored[:top_k]

@@ -19,6 +19,10 @@
                     <a href="#">Welcome, {{ user.username }}</a>
                     {% if user.is_superuser %}
                         <a href="{% url 'pets:admin_pending' %}">Admin Dashboard</a>
+                        <a href="{% url 'pets:admin_notifications' %}" class="notification-link">
+                            <i class="fas fa-bell"></i>
+                            <span id="unread-count" class="badge">0</span>
+                        </a>
                     {% endif %}
                     <a class="btn-ghost" href="{% url 'logout' %}">Logout</a>
                 {% else %}
@@ -53,5 +57,17 @@
     <footer class="site-footer">
         <div class="inner">© {{ now.year }} PetRescue</div>
     </footer>
+    <script>
+        function updateUnreadCount() {
+            fetch('/pets/admin/unread-count/')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('unread-count').textContent = data.unread_count;
+                })
+                .catch(error => console.error('Error fetching unread count:', error));
+        }
+        setInterval(updateUnreadCount, 30000); // every 30 seconds
+        updateUnreadCount(); // initial call
+    </script>
 </body>
 </html>

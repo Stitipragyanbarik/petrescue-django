@@ -4,8 +4,8 @@
   <h2>Report received</h2>
   <p>Thank you — owners of possible matching pets have been notified. We'll let you know if they confirm contact.</p>
   <ul>
-    {% for mr, pet in created_requests %}
-      <li>Notified owner of {{ pet.name }} (report id: {{ mr.id }})</li>
+    {% for mr in created_requests %}
+      <li>Notified owner of {{ mr.pet.name }} (report id: {{ mr.id }})</li>
     {% endfor %}
   </ul>
   <p><a href="/">Back to home</a></p>

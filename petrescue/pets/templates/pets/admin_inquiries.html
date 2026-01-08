@@ -1,0 +1,265 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="display-4">{{ page_title }}</h1>
+                    <p class="lead text-muted">{{ page_description }}</p>
+                </div>
+                {% if pending_count > 0 %}
+                    <div>
+                        <span class="badge badge-warning badge-lg">{{ pending_count }} pending</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if inquiries %}
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-warning text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-envelope-open"></i> Pet Inquiries
+                            {% if pending_count > 0 %}
+                                <span class="badge badge-light ml-2">{{ pending_count }} pending</span>
+                            {% endif %}
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            {% for inquiry in inquiries %}
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <h6 class="mb-0 mr-3">
+                                                    <i class="fas fa-user text-primary"></i>
+                                                    Inquiry from {{ inquiry.inquirer.username }}
+                                                </h6>
+                                                <span class="badge
+                                                    {% if inquiry.status == 'pending' %}badge-warning
+                                                    {% elif inquiry.status == 'responded' %}badge-success
+                                                    {% elif inquiry.status == 'closed' %}badge-secondary
+                                                    {% endif %}">
+                                                    {{ inquiry.get_status_display }}
+                                                </span>
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <strong>About:</strong>
+                                                <a href="#" class="text-decoration-none" data-toggle="collapse" data-target="#pet-details-{{ inquiry.id }}">
+                                                    {{ inquiry.pet.name }} ({{ inquiry.pet.species|default:"Unknown" }})
+                                                    <i class="fas fa-chevron-down ml-1"></i>
+                                                </a>
+                                            </div>
+
+                                            <div class="collapse mb-2" id="pet-details-{{ inquiry.id }}">
+                                                <div class="card card-body bg-light">
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            {% if inquiry.pet.image %}
+                                                                <img src="{{ inquiry.pet.image.url }}" class="img-fluid rounded" alt="{{ inquiry.pet.name }}" style="max-height: 150px;">
+                                                            {% else %}
+                                                                <div class="bg-secondary rounded d-flex align-items-center justify-content-center" style="height: 150px;">
+                                                                    <i class="fas fa-paw fa-2x text-white"></i>
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <strong>{{ inquiry.pet.name }}</strong><br>
+                                                            <small class="text-muted">
+                                                                {{ inquiry.pet.species|default:"Unknown" }} • {{ inquiry.pet.breed|default:"Mixed" }} • {{ inquiry.pet.gender }} • {{ inquiry.pet.age|default:"Unknown" }} years<br>
+                                                                {{ inquiry.pet.color|default:"Unknown" }} • Found: {{ inquiry.pet.location|default:"Unknown" }}<br>
+                                                                Reported: {{ inquiry.pet.report_date|date:"M d, Y" }}
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <strong>Message:</strong><br>
+                                                <p class="text-muted mb-1">{{ inquiry.inquiry_message|truncatewords:30 }}</p>
+                                            </div>
+
+                                            <div class="row text-sm">
+                                                <div class="col-md-6">
+                                                    <small class="text-muted">
+                                                        <i class="fas fa-envelope"></i> {{ inquiry.contact_email }}
+                                                        {% if inquiry.contact_phone %}
+                                                            <br><i class="fas fa-phone"></i> {{ inquiry.contact_phone }}
+                                                        {% endif %}
+                                                    </small>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <small class="text-muted">
+                                                        <i class="fas fa-calendar"></i> {{ inquiry.created_at|date:"M d, Y g:i A" }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="ml-3">
+                                            <div class="btn-group-vertical" role="group">
+                                                {% if inquiry.status == 'pending' %}
+                                                    <form method="post" class="mb-1">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="inquiry_id" value="{{ inquiry.id }}">
+                                                        <input type="hidden" name="action" value="mark_responded">
+                                                        <button type="submit" class="btn btn-sm btn-success" title="Mark as Responded">
+                                                            <i class="fas fa-check"></i> Responded
+                                                        </button>
+                                                    </form>
+                                                    <form method="post">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="inquiry_id" value="{{ inquiry.id }}">
+                                                        <input type="hidden" name="action" value="close">
+                                                        <button type="submit" class="btn btn-sm btn-secondary" title="Close Inquiry">
+                                                            <i class="fas fa-times"></i> Close
+                                                        </button>
+                                                    </form>
+                                                {% elif inquiry.status == 'responded' %}
+                                                    <span class="text-success">
+                                                        <i class="fas fa-check-circle"></i> Responded
+                                                    </span>
+                                                {% elif inquiry.status == 'closed' %}
+                                                    <span class="text-secondary">
+                                                        <i class="fas fa-archive"></i> Closed
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Card -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-secondary text-white">
+                        <h6 class="mb-0">
+                            <i class="fas fa-chart-bar"></i> Inquiry Statistics
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-3">
+                                <div class="h4 text-primary">{{ inquiries|length }}</div>
+                                <small class="text-muted">Total Inquiries</small>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="h4 text-warning">{{ pending_count }}</div>
+                                <small class="text-muted">Pending</small>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="h4 text-success">
+                                    {% for inquiry in inquiries %}
+                                        {% if inquiry.status == 'responded' %}
+                                            {% cycle 'count' as counter %}
+                                        {% endif %}
+                                    {% empty %}
+                                        0
+                                    {% endfor %}
+                                    {% if counter %}
+                                        {{ counter }}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                </div>
+                                <small class="text-muted">Responded</small>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="h4 text-secondary">
+                                    {% for inquiry in inquiries %}
+                                        {% if inquiry.status == 'closed' %}
+                                            {% cycle 'count' as counter %}
+                                        {% endif %}
+                                    {% empty %}
+                                        0
+                                    {% endfor %}
+                                    {% if counter %}
+                                        {{ counter }}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                </div>
+                                <small class="text-muted">Closed</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-envelope-open fa-3x mb-3"></i>
+                    <h4>No inquiries yet</h4>
+                    <p class="mb-0">User inquiries about found pets will appear here for review and management.</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Bootstrap JS for collapse functionality -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+.list-group-item {
+    border-left: 4px solid transparent;
+}
+
+.list-group-item .badge-warning {
+    border-left-color: #ffc107;
+}
+
+.badge-lg {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+}
+
+.card-header {
+    border-radius: 10px 10px 0 0 !important;
+}
+
+.btn-group-vertical .btn {
+    margin-bottom: 0.25rem;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+.collapse {
+    transition: all 0.3s ease;
+}
+</style>
+{% endblock %}

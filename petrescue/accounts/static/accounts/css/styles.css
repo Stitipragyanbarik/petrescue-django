@@ -259,3 +259,31 @@ input:focus{outline:none;box-shadow:0 0 0 4px rgba(37,99,235,0.08);border-color:
 }
 
 @media (max-width:560px){.card{margin:18px;padding:18px}}
+
+/* Notification styles */
+.notification-link {
+    position: relative;
+    color: var(--muted);
+    text-decoration: none;
+    margin-left: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.notification-link:hover {
+    color: var(--accent);
+}
+
+.badge {
+    background: var(--danger);
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
+    min-width: 18px;
+    text-align: center;
+    display: inline-block;
+    line-height: 1;
+}

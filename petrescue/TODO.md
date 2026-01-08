@@ -1,0 +1,4 @@
+- Modify report_pet view to create AdminNotification for potential matches instead of auto-sending email
+- Update admin_notifications view to handle 'send_email' POST action for potential_match notifications
+- Update admin_notifications.html template to show 'Send Notification Email' button for potential_match type notifications
+- Test the email sending with SMTP configuration

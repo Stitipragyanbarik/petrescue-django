@@ -1,14 +1,19 @@
 Hello {{ owner.username }},
 
-A rescuer has submitted a found-pet report that may match your pet "{{ pet.name }}".
+GREAT NEWS! Your lost pet "{{ pet.name }}" may have been found!
 
-Rescuer: {{ reporter.username }}
-Found pet report id: {{ found_pet.id }}
+📍 Location Found: {{ found_pet.location|default:"Location not specified" }}
+👤 Found by: {{ reporter.email }} ({{ reporter.username }})
 
-If this looks like your pet, please approve the contact request:
-Approve: {{ approve_url }}
+A rescuer has reported finding a pet that matches your lost pet's description. Our system has identified this as a potential match after comparing images and details.
 
-If this is not your pet, you can reject the request:
-Reject: {{ reject_url }}
+To connect with the person who found your pet:
+✅ Approve contact: {{ approve_url }}
 
-This request will expire in 7 days.
+If this doesn't appear to be your pet:
+❌ Reject request: {{ reject_url }}
+
+Please review the match details and take action within 7 days, as this request will expire automatically.
+
+Best regards,
+Pet Rescue Team

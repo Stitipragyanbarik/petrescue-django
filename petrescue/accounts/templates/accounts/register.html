@@ -201,52 +201,12 @@ input:focus, select:focus {
                     <label>{{ form.password2.label }}</label>
                     {{ form.password2 }}
                     {{ form.password2.errors }}
-                </div>                {% if not show_otp %}
-                    <button type="submit" class="btn-submit">Register</button>
-                {% endif %}
+                </div>
+
+                <button type="submit" class="btn-submit">Register</button>
             </form>
 
-            {% if show_otp %}
-            <!-- OTP Verification Section -->
-            <div class="otp-section" style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #007bff;">
-                <h3 style="color: #1a202c; margin-bottom: 15px; font-size: 20px;">📱 Verify Your Phone Number</h3>
-                <p style="color: #4a5568; margin-bottom: 20px;">
-                    We've sent a 6-digit verification code to <strong>{{ phone_number }}</strong>
-                </p>
-                
-                <form method="post" style="margin-bottom: 15px;">
-                    {% csrf_token %}
-                    <div class="form-row">
-                        <label for="otp" style="font-weight: 600; color: #2d3748;">Enter Verification Code:</label>
-                        <input 
-                            type="text" 
-                            id="otp" 
-                            name="otp" 
-                            maxlength="6" 
-                            placeholder="000000"
-                            style="text-align: center; font-size: 18px; letter-spacing: 2px; font-weight: 600;"
-                            required
-                        >
-                    </div>
-                    <button type="submit" name="verify_otp" class="btn-submit" style="background: #38a169;">
-                        ✓ Verify Code
-                    </button>
-                </form>
-                
-                <div style="text-align: center;">
-                    <form method="post" style="display: inline;">
-                        {% csrf_token %}
-                        <button type="submit" name="request_otp" class="btn-link" style="background: none; border: none; color: #007bff; text-decoration: underline; cursor: pointer; font-size: 14px;">
-                            📲 Resend Code
-                        </button>
-                    </form>
-                    <span style="color: #718096; margin: 0 10px;">|</span>
-                    <a href="{% url 'register' %}" style="color: #007bff; text-decoration: underline; font-size: 14px;">
-                        ← Start Over
-                    </a>
-                </div>
-            </div>
-            {% endif %}
+
 
             <p class="muted-link">
                 Already have an account?

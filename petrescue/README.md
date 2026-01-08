@@ -69,3 +69,9 @@ wa
 - Include input fields for pet details such as type, breed, color, location found, and
 contact information.
 - Allow admins to update request statuses (e.g., &quot;Accepted&quot; , “Rejected”).
+
+##Weeks 5-6: Pet Status Inquiry &amp; Notification Module
+- Implement a search feature for users to check if their lost pet has been reported.
+- Create a functional back-end using Django to handle requests and responses.
+- Enable admin notifications to streamline communication with users who raised
+requests.

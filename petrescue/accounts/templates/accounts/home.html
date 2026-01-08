@@ -65,7 +65,27 @@
         .navbar .nav-links a:hover {
             background-color: rgba(255,255,255,0.1);
             transform: translateY(-2px);
-        }        /* Hero Section */
+        }
+
+        .notification-link {
+            position: relative;
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4757;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
         .hero {
             height: 100vh;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -344,15 +364,21 @@
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="container">
-            <a href="{% url 'home' %}" class="logo">🐾 Pet Rescue</a>            <ul class="nav-links">
+            <ul class="nav-links">
                 <li><a href="{% url 'home' %}">Home</a></li>
                 <li><a href="{% url 'pets:lost_pets' %}">Lost Pets</a></li>
                 <li><a href="{% url 'pets:found_pets' %}">Found Pets</a></li>
                 <li><a href="{% url 'pets:adoption_pets' %}">Adoption</a></li>
                 <li><a href="{% url 'pets:search_pets' %}">Search Pets</a></li>
                 {% if user.is_authenticated %}
-                    {% if user.is_staff and request.path != '/pets/admin/pending/' %}
-                        <li><a href="/pets/admin/pending/">Admin Dashboard</a></li>
+                    {% if user.is_superuser %}
+                        <li><a href="{% url 'pets:admin_notifications' %}" class="notification-link">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-count" id="notification-count">0</span>
+                        </a></li>
+                        {% if request.path != '/pets/admin/pending/' %}
+                            <li><a href="/pets/admin/pending/">Admin Dashboard</a></li>
+                        {% endif %}
                     {% endif %}
                     <li><a href="{% url 'logout' %}">Logout</a></li>
                 {% else %}
@@ -461,5 +487,25 @@
             <p>&copy; 2025 Pet Rescue. All rights reserved.</p>
         </div>
     </footer>
+
+    <script>
+        function updateNotificationCount() {
+            fetch('{% url "pets:unread_count" %}')
+                .then(response => response.json())
+                .then(data => {
+                    const countElement = document.getElementById('notification-count');
+                    const count = data.unread_count;
+                    countElement.textContent = count > 99 ? '99+' : count;
+                    countElement.style.display = count > 0 ? 'flex' : 'none';
+                })
+                .catch(error => console.error('Error fetching notification count:', error));
+        }
+
+        // Update count on page load
+        document.addEventListener('DOMContentLoaded', updateNotificationCount);
+
+        // Update count every 30 seconds
+        setInterval(updateNotificationCount, 30000);
+    </script>
 </body>
 </html>

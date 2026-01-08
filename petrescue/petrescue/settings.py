@@ -34,9 +34,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# Use console backend during development so emails print to console
-if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'stitipragyanbarik@gmail.com'
+EMAIL_HOST_PASSWORD = 'yefw zigd xnpq xmni'
+DEFAULT_FROM_EMAIL = 'stitipragyanbarik@gmail.com'
 
 
 # Application definition

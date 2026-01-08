@@ -21,4 +21,5 @@ urlpatterns = [
     path('inquiry/<int:pet_id>/', views.pet_inquiry, name='pet_inquiry'),
     path('admin/notifications/', views.admin_notifications, name='admin_notifications'),
     path('admin/inquiries/', views.admin_inquiries, name='admin_inquiries'),
+    path('admin/unread-count/', views.unread_count, name='unread_count'),
 ]
