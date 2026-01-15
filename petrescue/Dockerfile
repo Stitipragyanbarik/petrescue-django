@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
+COPY petrescue/requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
